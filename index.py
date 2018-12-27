@@ -10,7 +10,7 @@ clock = pygame.time.Clock()
 
 spaceship = Spaceship()
 earth = Planet()
-SKY_COLOR = (100, 150, 255)
+SKY_COLOR = (0, 0, 0)
 
 shouldCloseApp = False
 framesPerSecond = 60
@@ -37,8 +37,8 @@ while not shouldCloseApp:
 		spaceship.applyProgradeForce(360)
 	
 	spaceship.renderTrajectory(screen, spaceship.position)
-	spaceship.render(screen, spaceship.position)
 	earth.render(screen, spaceship.position)
+	spaceship.render(screen, spaceship.position)
 
 	pygame.display.flip()
 
