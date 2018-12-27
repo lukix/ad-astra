@@ -34,14 +34,15 @@ while not shouldCloseApp:
 	if pygame.key.get_pressed()[pygame.K_RIGHT]:
 		spaceship.setClockwiseRotation()
 	if pygame.key.get_pressed()[pygame.K_UP]:
-		spaceship.applyProgradeForce(140)
+		spaceship.applyProgradeForce(360)
 	
-	spaceship.render(screen)
-	earth.render(screen)
+	spaceship.renderTrajectory(screen, spaceship.position)
+	spaceship.render(screen, spaceship.position)
+	earth.render(screen, spaceship.position)
 
 	pygame.display.flip()
 
-	spaceship.applyGravityTowards(1e7, earth.position) # Gravity
+	spaceship.applyGravityTowards(1e8, earth.position) # Gravity
 
 	spaceship.update(frameTime)
 
