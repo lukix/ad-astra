@@ -72,13 +72,19 @@ while not shouldCloseApp:
 		isGameOver = True
 		timeSpeedMultiplier = 0
 
-	if isGameOver:
+	if spaceship.isFrozen:
+		label1 = normalFont.render("Press \"space\" to fire the engine.", 1, (255,255,0))
+		screen.blit(label1, (50, 50))
+	elif isGameOver:
 		label1 = mainFont.render("Game Over!", 1, (255,255,0))
 		label2 = normalFont.render("Press \"space\" to try again.", 1, (255,255,0))
 		label3 = normalFont.render("Press \"escape\" to quit.", 1, (255,255,0))
 		screen.blit(label1, (50, 50))
 		screen.blit(label2, (55, 100))
 		screen.blit(label3, (55, 130))
+	else:
+		label1 = normalFont.render("Available burns: " + str(spaceship.getAvailableBurns()), 1, (255,255,0))
+		screen.blit(label1, (50, 50))
 
 	pygame.display.flip()
 	clock.tick(framesPerSecond)

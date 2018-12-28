@@ -14,8 +14,8 @@ class Spaceship:
 	angularVelocity = 0
 	isFrozen = True
 	timeUntilBurnout = 0
-	thrust = 365
-	burns = [3.0, 0.8, 0.2, 0.1, 0.1]
+	thrust = 370
+	burns = [2.8, 0.8, 0.2, 0.1, 0.1]
 	burnIndex = 0
 
 	spaceshipImage = None
@@ -25,14 +25,10 @@ class Spaceship:
 
 	def __init__(self):
 		self.spaceshipImage = pygame.image.load("assets/ship.png").convert_alpha()
-		self.plumeImages = [
-			pygame.image.load("assets/plumes/1.png").convert_alpha(),
-			pygame.image.load("assets/plumes/2.png").convert_alpha(),
-			pygame.image.load("assets/plumes/3.png").convert_alpha(),
-			pygame.image.load("assets/plumes/4.png").convert_alpha(),
-			pygame.image.load("assets/plumes/5.png").convert_alpha(),
-			pygame.image.load("assets/plumes/6.png").convert_alpha(),
-		]
+		self.plumeImages = list(map(
+			lambda n: pygame.image.load('assets/plumes/{n}.png'.format(n = n)).convert_alpha(),
+			range(1, 7)
+		))
 
 	def setClockwiseRotation(self):
 		self.angularVelocity = -80
@@ -48,6 +44,9 @@ class Spaceship:
 			return
 		self.timeUntilBurnout = self.burns[self.burnIndex]
 		self.burnIndex += 1
+
+	def getAvailableBurns(self):
+		return len(self.burns) - self.burnIndex
 
 	def applyDrag(self, airDensity):
 		v2 = self.velocity.length_squared()
