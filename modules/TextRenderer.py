@@ -7,6 +7,7 @@ class TextRenderer:
 		self.screen = screen
 		self.mainFont = pygame.font.SysFont("arial", 40)
 		self.normalFont = pygame.font.SysFont("arial", 20)
+		self.creditsFont = pygame.font.SysFont("arial", 15)
 		self.mainFont.set_bold(True)
 
 	def renderGameOverText(self):
@@ -28,3 +29,12 @@ class TextRenderer:
 		self.screen.blit(label1, (55, 50))
 		self.screen.blit(label2, (55, 80))
 		self.screen.blit(label3, (55, 110))
+
+	def renderCredits(self):
+		text = "Planet and Ship graphics made by Freepik from www.flaticon.com"
+		pos = (
+			self.screen.get_rect().bottomright[0] - 400,
+			self.screen.get_rect().bottomright[1] - 50
+		)
+		label1 = self.creditsFont.render(text, 1, TEXT_COLOR)
+		self.screen.blit(label1, pos)

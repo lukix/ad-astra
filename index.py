@@ -70,6 +70,7 @@ while not shouldCloseApp:
 	# Conditional Renders
 	if spaceship.isFrozen:
 		textRenderer.renderStartInstruction()
+		textRenderer.renderCredits()
 	elif isGameOver:
 		textRenderer.renderGameOverText()
 	else:
