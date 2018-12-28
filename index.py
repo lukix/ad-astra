@@ -42,7 +42,12 @@ while not shouldCloseApp:
 
 	pygame.display.flip()
 
+	altitude = earth.position.distance_to(spaceship.position) - (2 * 256)
+	airDensity = 8e-3 * (1 - 2.5e-3 * altitude) ** 8
+
 	spaceship.applyGravityTowards(1e8, earth.position) # Gravity
+
+	spaceship.applyDrag(0 if altitude > 250 else airDensity)
 
 	spaceship.update(frameTime)
 

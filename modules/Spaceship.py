@@ -20,13 +20,21 @@ class Spaceship:
 		self.spaceshipImage = pygame.image.load("assets/ship.png").convert_alpha()
 
 	def setClockwiseRotation(self):
-		self.angularVelocity = -60
+		self.angularVelocity = -80
 
 	def setAntiClockwiseRotation(self):
-		self.angularVelocity = 60
+		self.angularVelocity = 80
 
 	def stopRotation(self):
 		self.angularVelocity = 0
+
+	def applyDrag(self, airDensity):
+		v2 = self.velocity.length_squared()
+		if v2 == 0:
+			return
+		magnitude = airDensity * v2
+		dragForce = magnitude * self.velocity.normalize()
+		self.applyForce(-dragForce)
 
 	def applyProgradeForce(self, magnitude):
 		forceVector = pygame.math.Vector2(0, -magnitude).rotate(-self.angle)
@@ -72,11 +80,11 @@ class Spaceship:
 
 		t = 0
 		dt = 1.0 / 60
-		maxTime = 15.0
+		maxTime = 18.0
 		drawCounter = 1
 		while t < maxTime and not simulatedSpaceship.hasCrashed((0, 0), 512):
 			t += dt
-			drawCounter = (drawCounter + 1) % 5
+			drawCounter = (drawCounter + 1) % 6
 
 			simulatedSpaceship.applyGravityTowards(1e8, pygame.Vector2(0, 0))
 			simulatedSpaceship.update(dt)
@@ -84,4 +92,4 @@ class Spaceship:
 			if drawCounter == 0:
 				floatPos = simulatedSpaceship.position - cameraPosition + surface.get_rect().center
 				intPos = (int(floatPos.x), int(floatPos.y))
-				pygame.draw.circle(surface, (255, 0, 0), intPos, 2, 1)
+				pygame.draw.circle(surface, (50, 50, 255), intPos, 1, 1)
