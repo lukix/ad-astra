@@ -40,6 +40,7 @@ while not shouldCloseApp:
 					timeSpeedMultiplier = 1
 				else:
 					spaceship.unfroze()
+					spaceship.fireEngine()
 			if event.key == pygame.K_1:
 				timeSpeedMultiplier = 1
 			if event.key == pygame.K_2:
@@ -53,8 +54,6 @@ while not shouldCloseApp:
 		spaceship.setAntiClockwiseRotation()
 	if pygame.key.get_pressed()[pygame.K_RIGHT]:
 		spaceship.setClockwiseRotation()
-	if pygame.key.get_pressed()[pygame.K_UP]:
-		spaceship.applyProgradeForce(360)
 	
 	spaceship.renderTrajectory(screen, spaceship.position)
 	earth.render(screen, spaceship.position)

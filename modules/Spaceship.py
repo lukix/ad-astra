@@ -1,7 +1,8 @@
 import pygame
+import math
 
 def rot_center(image, rect, angle):
-	rot_image = pygame.transform.rotozoom(image, angle, 0.25)
+	rot_image = pygame.transform.rotozoom(image, angle, 1)
 	rot_rect = rot_image.get_rect(center=rect.center)
 	return rot_image,rot_rect
 
@@ -11,13 +12,27 @@ class Spaceship:
 	force = pygame.math.Vector2(0, 0)
 	angle = 0
 	angularVelocity = 0
-	engineOn = False
 	isFrozen = True
+	timeUntilBurnout = 0
+	thrust = 365
+	burns = [3.0, 0.8, 0.2, 0.1, 0.1]
+	burnIndex = 0
 
 	spaceshipImage = None
+	plumeImages = []
+	activePlumeIndex = 0
+	plumeImageChangeCounter = 0
 
 	def __init__(self):
 		self.spaceshipImage = pygame.image.load("assets/ship.png").convert_alpha()
+		self.plumeImages = [
+			pygame.image.load("assets/plumes/1.png").convert_alpha(),
+			pygame.image.load("assets/plumes/2.png").convert_alpha(),
+			pygame.image.load("assets/plumes/3.png").convert_alpha(),
+			pygame.image.load("assets/plumes/4.png").convert_alpha(),
+			pygame.image.load("assets/plumes/5.png").convert_alpha(),
+			pygame.image.load("assets/plumes/6.png").convert_alpha(),
+		]
 
 	def setClockwiseRotation(self):
 		self.angularVelocity = -80
@@ -27,6 +42,12 @@ class Spaceship:
 
 	def stopRotation(self):
 		self.angularVelocity = 0
+
+	def fireEngine(self):
+		if self.timeUntilBurnout > 0 or self.burnIndex >= len(self.burns):
+			return
+		self.timeUntilBurnout = self.burns[self.burnIndex]
+		self.burnIndex += 1
 
 	def applyDrag(self, airDensity):
 		v2 = self.velocity.length_squared()
@@ -57,6 +78,10 @@ class Spaceship:
 		return distance < planetRadius
 
 	def update(self, dt):
+		if self.timeUntilBurnout > 0:
+			self.timeUntilBurnout -= dt
+			self.applyProgradeForce(self.thrust)
+
 		if not self.isFrozen:
 			self.velocity = self.velocity + self.force * dt
 			self.position = self.position + self.velocity * dt
@@ -64,12 +89,36 @@ class Spaceship:
 
 		self.force = pygame.math.Vector2(0, 0)
 
+		self.plumeImageChangeCounter -= dt
+		if self.plumeImageChangeCounter <= 0:
+			self.activePlumeIndex = (self.activePlumeIndex + 1) % len(self.plumeImages)
+			self.plumeImageChangeCounter = 30e-3
+
 	def render(self, surface, cameraPosition):
 		image_rect = self.spaceshipImage.get_rect(center=surface.get_rect().center)
 		(rotatedSpaceshipImage, rotatedSpaceshipRect) = rot_center(self.spaceshipImage, image_rect, self.angle)
 		surface.blit(
 			rotatedSpaceshipImage,
 			rotatedSpaceshipRect.move(self.position).move(-cameraPosition)
+		)
+		if self.timeUntilBurnout > 0:
+			self.renderPlume(surface, cameraPosition)
+	
+	def renderPlume(self, surface, cameraPosition):
+		plumeImage = self.plumeImages[self.activePlumeIndex]
+		image_rect = plumeImage.get_rect(center=surface.get_rect().center)
+		(rotatedSpaceshipImage, rotatedSpaceshipRect) = rot_center(plumeImage, image_rect, self.angle)
+		plumeOffsetDistance = 26
+		plumeOffsetVector = (
+			plumeOffsetDistance * math.sin(math.radians(self.angle)),
+			plumeOffsetDistance * math.cos(math.radians(self.angle))
+		)
+		surface.blit(
+			rotatedSpaceshipImage,
+			rotatedSpaceshipRect
+				.move(self.position)
+				.move(plumeOffsetVector)
+				.move(-cameraPosition)
 		)
 
 	def renderTrajectory(self, surface, cameraPosition):
