@@ -16,6 +16,7 @@ normalFont = pygame.font.SysFont("arial", 20)
 spaceship = Spaceship()
 earth = Planet()
 SKY_COLOR = (0, 0, 0)
+TEXT_COLOR = (255, 255, 0)
 
 shouldCloseApp = False
 isGameOver = False
@@ -59,7 +60,7 @@ while not shouldCloseApp:
 	earth.render(screen, spaceship.position)
 	spaceship.render(screen, spaceship.position)
 
-	altitude = earth.position.distance_to(spaceship.position) - (2 * 256)
+	altitude = earth.getObjectAltitude(spaceship.position)
 	airDensity = 6e-3 * (1 - 2.5e-3 * altitude) ** 8
 
 	spaceship.applyGravityTowards(1e8, earth.position) # Gravity
@@ -68,23 +69,27 @@ while not shouldCloseApp:
 
 	spaceship.update(frameTime * timeSpeedMultiplier)
 
-	if spaceship.hasCrashed(earth.position, 2 * 256):
+	if altitude <= 0:
 		isGameOver = True
 		timeSpeedMultiplier = 0
 
 	if spaceship.isFrozen:
-		label1 = normalFont.render("Press \"space\" to fire the engine.", 1, (255,255,0))
-		screen.blit(label1, (50, 50))
+		label1 = normalFont.render("Press \"space\" to fire the engine.", 1, TEXT_COLOR)
+		screen.blit(label1, (55, 50))
 	elif isGameOver:
-		label1 = mainFont.render("Game Over!", 1, (255,255,0))
-		label2 = normalFont.render("Press \"space\" to try again.", 1, (255,255,0))
-		label3 = normalFont.render("Press \"escape\" to quit.", 1, (255,255,0))
+		label1 = mainFont.render("Game Over!", 1, TEXT_COLOR)
+		label2 = normalFont.render("Press \"space\" to try again.", 1, TEXT_COLOR)
+		label3 = normalFont.render("Press \"escape\" to quit.", 1, TEXT_COLOR)
 		screen.blit(label1, (50, 50))
 		screen.blit(label2, (55, 100))
 		screen.blit(label3, (55, 130))
 	else:
-		label1 = normalFont.render("Available burns: " + str(spaceship.getAvailableBurns()), 1, (255,255,0))
-		screen.blit(label1, (50, 50))
+		label1 = normalFont.render("Available burns: " + str(spaceship.getAvailableBurns()), 1, TEXT_COLOR)
+		label2 = normalFont.render("Speed:  " + str(round(spaceship.getSpeed())) + "m/s", 1, TEXT_COLOR)
+		label3 = normalFont.render("Altitude: " + str(round(altitude)) + "m", 1, TEXT_COLOR)
+		screen.blit(label1, (55, 50))
+		screen.blit(label2, (55, 80))
+		screen.blit(label3, (55, 110))
 
 	pygame.display.flip()
 	clock.tick(framesPerSecond)

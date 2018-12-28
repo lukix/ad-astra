@@ -7,7 +7,7 @@ def rot_center(image, rect, angle):
 	return rot_image,rot_rect
 
 class Spaceship:
-	position = pygame.math.Vector2(0, -(2 * 256 + 18))
+	position = pygame.math.Vector2(0, -(2 * 256 + 12))
 	velocity = pygame.math.Vector2(0, 0)
 	force = pygame.math.Vector2(0, 0)
 	angle = 0
@@ -15,7 +15,7 @@ class Spaceship:
 	isFrozen = True
 	timeUntilBurnout = 0
 	thrust = 370
-	burns = [2.8, 0.8, 0.2, 0.1, 0.1]
+	burns = [3.6, 0.6, 0.2, 0.1, 0.1]
 	burnIndex = 0
 
 	spaceshipImage = None
@@ -38,6 +38,9 @@ class Spaceship:
 
 	def stopRotation(self):
 		self.angularVelocity = 0
+
+	def getSpeed(self):
+		return self.velocity.length()
 
 	def fireEngine(self):
 		if self.timeUntilBurnout > 0 or self.burnIndex >= len(self.burns):

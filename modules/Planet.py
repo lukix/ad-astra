@@ -8,11 +8,15 @@ def rot_center(image, rect, angle):
 class Planet:
 	position = pygame.math.Vector2(0, 0)
 	angle = 0
+	radius = 512
 
 	image = None
 
 	def __init__(self):
 		self.image = pygame.image.load("assets/earth.png").convert_alpha()
+
+	def getObjectAltitude(self, targetPosition):
+		return self.position.distance_to(targetPosition) - self.radius
 
 	def render(self, surface, cameraPosition):
 		image_rect = self.image.get_rect(center=surface.get_rect().center)
