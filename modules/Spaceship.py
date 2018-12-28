@@ -123,7 +123,7 @@ class Spaceship:
 				.move(-cameraPosition)
 		)
 
-	def renderTrajectory(self, surface, cameraPosition):
+	def renderTrajectory(self, surface, cameraPosition, externalSpaceshipUpdate, hasCrashed):
 		simulatedSpaceship = Spaceship()
 		simulatedSpaceship.position = self.position
 		simulatedSpaceship.velocity = self.velocity
@@ -133,11 +133,11 @@ class Spaceship:
 		dt = 1.0 / 60
 		maxTime = 18.0
 		drawCounter = 1
-		while t < maxTime and not simulatedSpaceship.hasCrashed((0, 0), 512):
+		while t < maxTime and not hasCrashed(simulatedSpaceship):
 			t += dt
 			drawCounter = (drawCounter + 1) % 6
 
-			simulatedSpaceship.applyGravityTowards(1e8, pygame.Vector2(0, 0))
+			externalSpaceshipUpdate(simulatedSpaceship)
 			simulatedSpaceship.update(dt)
 
 			if drawCounter == 0:
